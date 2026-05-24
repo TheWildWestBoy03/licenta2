@@ -7,15 +7,15 @@ import pandas as pd
 def main():
     pipeline = PipelineManager()
     ingestors_list = [ingestors.HugeFirstDataset()]
-    data_processors = [data_handlers.Cleaner(), data_handlers.Transformer()]
+    data_processors = [Cleaner(), Transformer()]
 
     pipeline.add_step(data_processors[0])
     pipeline.add_step(data_processors[1])
 
     print("Starting etl pipeline...")
 
-    # for ingestor in ingestors_list:
-    #     ingestor.ingest(pipeline)
+    for ingestor in ingestors_list:
+        ingestor.ingest(pipeline)
 
 if __name__ == "__main__":
     main()

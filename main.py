@@ -1,6 +1,7 @@
 import ingestors
-from data_handlers import Cleaner, Transformer, PipelineManager
-from Cleaner
+from data_handlers.Cleaner import Cleaner
+from data_handlers.Transformer import Transformer
+from data_handlers.PipelineManager import PipelineManager
 import pandas as pd
 
 def main():

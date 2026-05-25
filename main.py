@@ -3,10 +3,14 @@ from data_handlers.Cleaner import Cleaner
 from data_handlers.Transformer import Transformer
 from data_handlers.PipelineManager import PipelineManager
 import pandas as pd
+import sys
 
 def main():
+    dataset_path = sys.argv[1]
+
+    print(dataset_path);
     pipeline = PipelineManager()
-    ingestors_list = [ingestors.HugeFirstDataset()]
+    ingestors_list = [ingestors.HugeFirstDataset(dataset_path)]
     data_processors = [Cleaner(), Transformer()]
 
     pipeline.add_step(data_processors[0])

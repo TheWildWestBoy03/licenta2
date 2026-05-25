@@ -6,7 +6,5 @@ if TYPE_CHECKING:
     import ingestors
 
 class Transformer(DataHandler):
-    def visit_huge_datasetbook(self, hugeDatasetBook: 'ingestors.HugeFirstDataset'):
-        print("Transforming huge dataset")
-
+    def visit_huge_datasetbook(self, hugeDatasetBook: 'ingestors.HugeFirstDataset', processing_chunk):
         pass

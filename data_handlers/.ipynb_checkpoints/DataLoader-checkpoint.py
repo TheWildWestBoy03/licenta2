@@ -3,7 +3,7 @@ import pandas as pd
 
 
 class DataLoader:
-    def __init__(self, db_path="data.db"):
+    def __init__(self, db_path="/mnt/gdrive/database.db"):
         self.con = duckdb.connect(db_path)
 
         self.con.execute("""

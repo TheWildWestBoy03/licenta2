@@ -10,7 +10,7 @@ if TYPE_CHECKING:
 class Cleaner(DataHandler):
     categorii_valide = ["Fiction", "Sci-Fi", "Mystery", "Biography", "History", "Fantasy", "Business", "Self-Help"]
     
-    def visit_huge_datasetbook(self, hugeDatasetBook: 'ingestors.HugeFirstDataset', processing_chunk):
+    def visit_huge_datasetbook(self, processing_chunk):
         print("Visit huge datasetbook")
         pandas_frame = pd.DataFrame(processing_chunk);
 

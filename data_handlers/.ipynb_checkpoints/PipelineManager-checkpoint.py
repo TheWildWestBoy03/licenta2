@@ -1,12 +1,11 @@
-import os;
-
 class PipelineManager:
     def __init__(self):
         self.steps = []
 
-    def add_step(self, data_handler):
-        self.steps.append(data_handler)
+    def add_step(self, step):
+        self.steps.append(step)
 
-    def execute_steps(self, ingestor_instance, processing_chunk):
+    def execute_steps(self, df):
         for step in self.steps:
-            processing_chunk = ingestor_instance.accept(step, processing_chunk)
+            df = step.visit_huge_datasetbook(df)
+        return df

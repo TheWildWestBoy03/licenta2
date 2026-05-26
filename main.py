@@ -1,27 +1,41 @@
-import ingestors
-from data_handlers.Cleaner import Cleaner
-from data_handlers.Transformer import Transformer
-from data_handlers.PipelineManager import PipelineManager
-from data_handlers.DataLoader import DataLoader
-import pandas as pd
 import sys
+
+from ingestors.HugeFirstDataset import HugeFirstDataset
+from data_handlers.PipelineManager import PipelineManager
+from data_handlers.Cleaner import Cleaner
+from data_handlers.DataLoader import DataLoader
+
+
+def build_pipeline():
+    pipeline = PipelineManager()
+
+    # STAGE: CLEANING / TRANSFORM LOGIC ONLY
+    pipeline.add_step(Cleaner())
+
+    return pipeline
+
 
 def main():
     dataset_path = sys.argv[1]
 
-    print(dataset_path);
-    pipeline = PipelineManager()
-    ingestors_list = [ingestors.HugeFirstDataset(dataset_path)]
-    data_processors = [Cleaner(), DataLoader(), Transformer()]
+    print(f"Starting ELT pipeline for: {dataset_path}")
 
-    pipeline.add_step(data_processors[0])
-    pipeline.add_step(data_processors[1])
-    # pipeline.add_step(data_processors[2])
+    pipeline = build_pipeline()
 
-    print("Starting etl pipeline...")
+    ingestor = HugeFirstDataset(dataset_path)
 
-    for ingestor in ingestors_list:
-        ingestor.ingest(pipeline)
+    print("Running parallel compute stage...")
+    results = ingestor.ingest(pipeline)
+
+    print(f"Compute stage finished. Processed {len(results)} chunks.")
+
+    print("Writing to DuckDB...")
+
+    loader = DataLoader()
+    loader.flush_many(results)
+
+    print("ETL pipeline completed successfully.")
+
 
 if __name__ == "__main__":
     main()

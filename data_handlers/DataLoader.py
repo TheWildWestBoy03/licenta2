@@ -1,31 +1,35 @@
+import duckdb
 import pandas as pd
-from typing import TYPE_CHECKING, Dict
-from data_handlers.DataHandler import DataHandler
-import duckdb as dd
-import database.db as database
 
-if TYPE_CHECKING:
-    import ingestors
 
-class DataLoader(DataHandler):
-    def __init__(self):
-        database.init_worker()
-        self.con = database.worker_conn;
-        
-    def save_to_db(self, table_name: str, chunk: pd.DataFrame):
-        if chunk is None:
+class DataLoader:
+    def __init__(self, db_path="data.db"):
+        self.con = duckdb.connect(db_path)
+
+        self.con.execute("""
+            CREATE TABLE IF NOT EXISTS huge_dataset_books (
+                title VARCHAR,
+                author VARCHAR,
+                category VARCHAR,
+                rating DOUBLE,
+                isbn VARCHAR
+            )
+        """)
+
+    def save(self, df: pd.DataFrame):
+        if df is None or df.empty:
             return
-        
-        if isinstance(chunk, pd.DataFrame) and chunk.empty:
-            return
-            
-        self.con.register("chunk", chunk)
-        self.con.execute(f"CREATE TABLE IF NOT EXISTS {table_name} AS SELECT * FROM chunk WHERE 1=0")
-        self.con.execute(f"INSERT INTO {table_name} SELECT * FROM chunk")
-        
-    def visit_huge_datasetbook(self, hugeDatasetBook: 'ingestors.HugeFirstDataset', processing_chunk):
-        print("Start to load data into data lake");
-        self.save_to_db("huge_dataset_books", processing_chunk)
 
-        print("Finish to load data into data lake");
-        return processing_chunk;
+        # NO register (avoids shared state issues)
+        self.con.execute(
+            "INSERT INTO huge_dataset_books SELECT * FROM df",
+            {"df": df}
+        )
+
+    def flush_many(self, dfs):
+        self.con.execute("BEGIN TRANSACTION")
+
+        for df in dfs:
+            self.save(df)
+
+        self.con.execute("COMMIT")

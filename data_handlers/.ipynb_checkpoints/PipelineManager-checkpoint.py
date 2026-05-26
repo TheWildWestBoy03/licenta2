@@ -5,7 +5,7 @@ class PipelineManager:
     def add_step(self, step):
         self.steps.append(step)
 
-    def execute_steps(self, df):
+    def execute(self, df):
         for step in self.steps:
-            df = step.visit_huge_datasetbook(df)
+            df = step.process(df)
         return df

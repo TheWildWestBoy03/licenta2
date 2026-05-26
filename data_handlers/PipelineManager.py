@@ -5,6 +5,6 @@ class PipelineManager:
     def add_step(self, data_handler):
         self.steps.append(data_handler)
 
-    def execute_steps(self, ingestor, processing_chunk):
+    def execute_steps(self, ingestor_instance, processing_chunk):
         for step in self.steps:
-            processing_chunk = ingestor.accept(step, processing_chunk)
+            processing_chunk = ingestor_instance.accept(step, processing_chunk)

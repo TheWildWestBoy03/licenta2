@@ -5,6 +5,22 @@ import os
 from data_handlers.PipelineManager import PipelineManager
 import multiprocessing as mp
 import pyarrow.parquet as pa
+import duckdb as dd
+worker_conn = None
+
+def init_worker():
+    global worker_conn
+    
+    # worker_conn = dd.connect('/mnt/gdrive/data_aggregator_database.db');
+    # worker_conn.execute("""
+    # CREATE TABLE IF NOT EXISTS unified_books (
+    #     title VARCHAR,
+    #     author VARCHAR,
+    #     main_category VARCHAR,
+    #     rating NUMBER,
+    #     isbn VARCHAR,
+    # )
+    # """)
 
 class HugeFirstDataset(Ingestor):
     def __init__(self, dataset_path):
@@ -13,7 +29,6 @@ class HugeFirstDataset(Ingestor):
     def process_batch(self, task_info):
         dataset_path, row_group_index, pipeline_steps = task_info
 
-        # print(f"Currently processing {row_group_index}");
         parquet_file = pa.ParquetFile(dataset_path)
         row_group_table = parquet_file.read_row_group(row_group_index)
 
@@ -37,7 +52,7 @@ class HugeFirstDataset(Ingestor):
 
         print(num_row_groups);
         
-        with mp.Pool(processes=num_cores) as pool:
+        with mp.Pool(processes=num_cores, initializer=init_worker) as pool:
             pool.map(self.process_batch, tasks)
 
         pass

@@ -12,7 +12,7 @@ def main():
     print(dataset_path);
     pipeline = PipelineManager()
     ingestors_list = [ingestors.HugeFirstDataset(dataset_path)]
-    data_processors = [Cleaner(),  Transformer(), DataLoader()]
+    data_processors = [Cleaner(), DataLoader(), Transformer()]
 
     pipeline.add_step(data_processors[0])
     pipeline.add_step(data_processors[1])

@@ -20,7 +20,6 @@ def generate_giant_dataset(total_files=10, rows_per_file=100_000_000, batch_size
     autori_baza = [fake.name() for _ in range(10_000)]
     cuvinte_baza = [fake.word().capitalize() for _ in range(5_000)]
     
-    # REZOLVARE EROARE: Schimbăm pa.string() în pa.large_string() ca să se potrivească perfect cu Polars
     schema = pa.schema([
         ('book_id', pa.int64()),
         ('title', pa.large_string()),

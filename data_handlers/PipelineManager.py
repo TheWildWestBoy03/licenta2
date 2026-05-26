@@ -1,3 +1,5 @@
+import os;
+
 class PipelineManager:
     def __init__(self):
         self.steps = []

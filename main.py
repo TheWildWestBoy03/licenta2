@@ -16,7 +16,7 @@ def main():
 
     pipeline.add_step(data_processors[0])
     pipeline.add_step(data_processors[1])
-    pipeline.add_step(data_processors[2])
+    # pipeline.add_step(data_processors[2])
 
     print("Starting etl pipeline...")
 
